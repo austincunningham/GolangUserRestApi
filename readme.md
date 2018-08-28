@@ -1,6 +1,12 @@
 # Golang REST API
 
-User REST API with crudl operation on mongo db 
+User REST API with crudl operation on mongo db. Following endpoints will be available 
+
+    /users GET    (get all users)
+    /users/{id}   (find a single user by id)
+    /users POST   (create a user)
+    /users PUT    (update a user)
+    /users DELETE (delete a user) 
 
 ## Prerequisites
 
