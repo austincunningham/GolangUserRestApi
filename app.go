@@ -32,8 +32,8 @@ func main() {
 	fmt.Printf("REST API User from golang\n")
 
 	//outputs
-	fmt.Printf("Server listing on http://localhost:8080\n")
-	fmt.Printf("CTRL C to exit\n")
+	fmt.Printf("Server listing on http://localhost:8080/users")
+	fmt.Printf("\nCTRL C to exit\n")
 
 	// Controller for endpoints
 	r := mux.NewRouter()
