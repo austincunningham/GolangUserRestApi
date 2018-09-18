@@ -6,6 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"GolangUserRestApi/config"
+	"GolangUserRestApi/dao"
+	"GolangUserRestApi/models"
 )
 
 func AllUsers(w http.ResponseWriter, r *http.Request){
@@ -28,6 +31,32 @@ func DeleteUser(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintln(w, "ToDo")
 }
 
+
+//error
+// func respondWithError(w http.ResponseWriter, code int, msg string) {
+// 	respondWithJson(w, code, map[string]string{"error": msg})
+// }
+// normal response
+// func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
+// 	response, _ := json.Marshal(payload)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(code)
+// 	w.Write(response)
+// }
+
+
+
+// Parse the configuration file 'config.toml', and establish a connection to DB
+func init() {
+	config.Read()
+
+	dao.Server = config.Server
+	dao.Database = config.Database
+	dao.Connect()
+}
+
+
+// Define the routes
 func main() {
 	fmt.Printf("REST API User from golang\n")
 

@@ -3,9 +3,9 @@ package dao
 import (
 	"log"
 
-	"github.com/austincunningham/GolangUserRestApi/models"
+	//"GolangUserRestApi/models"
 	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	_ "gopkg.in/mgo.v2/bson"
 )
 
 type UsersDAO struct {
@@ -26,3 +26,14 @@ func (m *UsersDAO) Connect() {
 	}
 	db = session.DB(m.Database)
 }
+
+// func (m *UsersDAO) FindAll() ([]User, error){
+// 	var users []User
+// 	err := db.C(COLLECTION).Find(bson.M{}).All(&users)
+// 	return users, err
+// }
+
+// func (m *UsersDAO) Insert(user User) error {
+// 	err := db.C(COLLECTION).Insert(&user)
+// 	return err
+// }
