@@ -12,12 +12,7 @@ User REST API with crudl operation on mongo db. Following endpoints will be avai
 
 - Golang
 Install the following
-- toml : Parses the configuration file for MongoDB server & credentials
-- mux : Request router 
-- mgo : MongoDB driver
-```bash
-go get github.com/BurntSushi/toml
-go get gopkg.in/mgo.v2
+go get go.mongodb.org/mongo-driver
 go get github.com/gorilla/mux  
 ```
 
