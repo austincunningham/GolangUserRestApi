@@ -12,6 +12,7 @@ User REST API with crudl operation on mongo db. Following endpoints will be avai
 
 - Golang
 Install the following
+```bash
 go get go.mongodb.org/mongo-driver
 go get github.com/gorilla/mux  
 ```
