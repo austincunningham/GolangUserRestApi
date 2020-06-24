@@ -72,12 +72,36 @@ func (db *DB)CreateUser(res http.ResponseWriter, req *http.Request){
 	json.NewEncoder(res).Encode(result)
 }
 
-func UpdateUsers(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintln(w, "ToDo")
+func (db *DB)UpdateUser(res http.ResponseWriter, req *http.Request){
+	fmt.Println("UpdateUser PUT")
+	// get the id from the url
+	params := mux.Vars(req)
+	objectId, _ := primitive.ObjectIDFromHex(params["id"])
+	// set the header info
+	res.Header().Set("content-type", "application/json")
+	//set the filter on the id
+	filter := bson.M{"_id": objectId}
+	// decode the request body 
+	_ = json.NewDecoder(req.Body).Decode(&user)
+	update := bson.M{"$set": &user}
+	result,err := db.collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil{
+		fmt.Println("error",err)
+	}
+	json.NewEncoder(res).Encode(result)
 }
 
-func DeleteUser(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintln(w, "ToDo")
+func (db *DB)DeleteUser(res http.ResponseWriter, req *http.Request){
+	fmt.Println("DeleteUser DELETE")
+	params := mux.Vars(req)
+	objectId, _ := primitive.ObjectIDFromHex(params["id"])
+	res.Header().Set("content-type", "application/json")
+	filter := bson.M{"_id": objectId}
+	result, err := db.collection.DeleteOne(context.TODO(), filter)
+	if err != nil{
+		fmt.Println("error",err)
+	}
+	json.NewEncoder(res).Encode(result)
 }
 
 
@@ -122,8 +146,8 @@ func main() {
 	r.HandleFunc("/users", db.AllUsers).Methods("GET")
 	r.HandleFunc("/users/{id}", db.FindUser).Methods("GET")
 	r.HandleFunc("/users", db.CreateUser).Methods("POST")
-	r.HandleFunc("/users", UpdateUsers).Methods("PUT")
-	r.HandleFunc("/users", DeleteUser).Methods("DELETE")
+	r.HandleFunc("/users/{id}", db.UpdateUser).Methods("PUT")
+	r.HandleFunc("/users/{id}", db.DeleteUser).Methods("DELETE")
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)

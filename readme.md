@@ -2,14 +2,14 @@
 
 User REST API with crudl operation on mongo db. Following endpoints will be available 
 
-    /users GET    (get all users)
-    /users/{id}   (find a single user by id)
-    /users POST   (create a user)
-    /users PUT    (update a user)
-    /users DELETE (delete a user) 
+    /users GET         (get all users)
+    /users/{id}        (find a single user by id)
+    /users POST        (create a user)
+    /users/{id} PUT    (update a user)
+    /users/{id} DELETE (delete a user) 
 
 ## Prerequisites
-
+- Mongo db
 - Golang
 Install the following
 ```bash
@@ -21,5 +21,5 @@ go get github.com/gorilla/mux
 Use the following command
 
 ```bash
-go run app.go
+go run main.go
 ```
