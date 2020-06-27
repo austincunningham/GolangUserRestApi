@@ -33,7 +33,10 @@ func (db *DB)AllUsers(res http.ResponseWriter, req *http.Request){
 	findOptions := options.Find()
 	//findOptions.SetLimit(5)
 	// use the find command to get all
-	result , _ := db.collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	result , err := db.collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		fmt.Println("AllUsers GET failed to query DB", err)
+	}
 	//go through the result and decode each element at a time
 	for result.Next(context.TODO()){
 		err := result.Decode(&user)
@@ -68,7 +71,10 @@ func (db *DB)CreateUser(res http.ResponseWriter, req *http.Request){
 	res.Header().Set("content-type", "application/json")
 	_ = json.NewDecoder(req.Body).Decode(&user)
 
-	result, _ := db.collection.InsertOne(context.TODO(), user)
+	result, err := db.collection.InsertOne(context.TODO(), user)
+	if err != nil {
+		fmt.Println("CreateUser Error inserting record ", err)
+	}
 	json.NewEncoder(res).Encode(result)
 }
 
@@ -86,7 +92,7 @@ func (db *DB)UpdateUser(res http.ResponseWriter, req *http.Request){
 	update := bson.M{"$set": &user}
 	result,err := db.collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil{
-		fmt.Println("error",err)
+		fmt.Println("UpdateOne PUT failed to query DB ",err)
 	}
 	json.NewEncoder(res).Encode(result)
 }
@@ -99,7 +105,7 @@ func (db *DB)DeleteUser(res http.ResponseWriter, req *http.Request){
 	filter := bson.M{"_id": objectId}
 	result, err := db.collection.DeleteOne(context.TODO(), filter)
 	if err != nil{
-		fmt.Println("error",err)
+		fmt.Println("DeleteUser DELETE failed to query DB",err)
 	}
 	json.NewEncoder(res).Encode(result)
 }
@@ -113,7 +119,7 @@ func main() {
 	//config.Connect()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	// Set client otions
-    clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+    clientOptions := options.Client().ApplyURI("mongodb://admin:admin@mongodb:27017")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -138,7 +144,7 @@ func main() {
 	fmt.Println("Connected to MongoDB!")
 
 	//outputs
-	fmt.Printf("Server listing on http://localhost:8080/users")
+	fmt.Printf("Server listing on http://mongo:8080/users")
 	fmt.Printf("\nCTRL C to exit\n")
 
 	// Controller for endpoints
