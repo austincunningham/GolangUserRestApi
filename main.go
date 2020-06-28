@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"context"
 	"encoding/json"
-	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -20,18 +19,16 @@ type DB struct {
 	collection *mongo.Collection
 }
 
-var user models.User
-
 // find all users
 func (db *DB)AllUsers(res http.ResponseWriter, req *http.Request){
 	fmt.Println("AllUsers GET")
 	// create an array of users
 	var results []models.User
+	var user models.User
 	// set the api header
 	res.Header().Set("content-type", "application/json")
 	// set the find options, not sure I need this
 	findOptions := options.Find()
-	//findOptions.SetLimit(5)
 	// use the find command to get all
 	result , err := db.collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
@@ -53,6 +50,7 @@ func (db *DB)AllUsers(res http.ResponseWriter, req *http.Request){
 // find a single user
 func (db *DB)FindUser(res http.ResponseWriter, req *http.Request){
 	fmt.Println("FindUser GET")
+	var user models.User
 	params := mux.Vars(req)
 	objectId, _ := primitive.ObjectIDFromHex(params["id"])
 	res.Header().Set("content-type", "application/json")
@@ -67,7 +65,7 @@ func (db *DB)FindUser(res http.ResponseWriter, req *http.Request){
 
 func (db *DB)CreateUser(res http.ResponseWriter, req *http.Request){
 	fmt.Println("CreateUser POST")
-
+    var user models.User
 	res.Header().Set("content-type", "application/json")
 	_ = json.NewDecoder(req.Body).Decode(&user)
 
@@ -80,6 +78,7 @@ func (db *DB)CreateUser(res http.ResponseWriter, req *http.Request){
 
 func (db *DB)UpdateUser(res http.ResponseWriter, req *http.Request){
 	fmt.Println("UpdateUser PUT")
+	var user models.User
 	// get the id from the url
 	params := mux.Vars(req)
 	objectId, _ := primitive.ObjectIDFromHex(params["id"])
@@ -116,14 +115,11 @@ func main() {
 	fmt.Printf("REST API User from golang\n")
 
 	// connect to mongodb
-	//config.Connect()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	// Set client otions
     clientOptions := options.Client().ApplyURI("mongodb://admin:admin@mongodb:27017")
 
 	// Connect to MongoDB
-	client, err := mongo.Connect(ctx, clientOptions)
-
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -136,7 +132,9 @@ func main() {
 	}
 	defer client.Disconnect(context.TODO())
 
+	// set the collection and database
 	collection := client.Database("golang-user").Collection("users")
+	// you can now update the global db with collection
 	db := &DB{collection: collection }
 	
 
